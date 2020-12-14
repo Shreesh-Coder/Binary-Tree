@@ -4,16 +4,22 @@
 #include <iostream>
 #include "BinaryTree.h"
 #include "BinaryTreeArray.h"
+#include "ThreadedBinaryTree.h"
+#include "RandomTree.h"
 
 void simpleTreeTesting();
 void TreeArrayTesting();
 void testInorderStack();
+void testThreadedTree();
+void testRandomTree();
 
 int main()
 {
     //simpleTreeTesting();
     //TreeArrayTesting();
-    testInorderStack();
+    //testInorderStack();
+    //testThreadedTree();
+    testRandomTree();
 }
 
 
@@ -85,7 +91,6 @@ void TreeArrayTesting() {
 
 void testInorderStack() {
     using namespace tree;
-    
     Node* root = new Node(1);
     //Layer 2
     root->left = new Node(2);
@@ -99,15 +104,70 @@ void testInorderStack() {
     
     BinaryTree bt(root);
     bt.printInOrderStack();
+    std::cout << std::endl;
+    bt.morrisTraversal();
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
+void testThreadedTree()
+{
+    ThreadedBinaryTree::Node* root = new ThreadedBinaryTree::Node(6);
+    //Layer 2
+    root->left = new ThreadedBinaryTree::Node(3);
+    root->right = new ThreadedBinaryTree::Node(8);
+    //Layer 3
+    root->left->left = new ThreadedBinaryTree::Node(1);
+    root->left->right = new ThreadedBinaryTree::Node(5);
+    root->right->left = new ThreadedBinaryTree::Node(7);
+    root->right->right = new ThreadedBinaryTree::Node(11);
+    //Layer 4
+    root->right->right->left = new ThreadedBinaryTree::Node(9);
+    root->right->right->right = new ThreadedBinaryTree::Node(13);
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+    /*
+    *       6
+    *     /   \
+    *    3     8
+    *   /\    /  \
+    *  1  5  7    11
+    *             /\
+    *            9  13
+    */
+
+    ThreadedBinaryTree *tbt = new ThreadedBinaryTree(root);
+    tbt->converter();
+    tbt->printInorderTraversal();
+}
+
+void testRandomTree()
+{
+    RandomTree::Node* root = new RandomTree::Node(6);
+    //Layer 2
+    root->left = new RandomTree::Node(3);
+    root->right = new RandomTree::Node(8);
+    //Layer 3
+    root->left->left = new RandomTree::Node(1);
+    root->left->right = new RandomTree::Node(5);
+    //Initlazing Random Pointers
+    root->left->left->random = root->left; // 1->3
+    root->left->right->random = root;      // 5->6
+
+
+    RandomTree* rbt = new RandomTree(root);
+    rbt->RandomPointerReargmentInorder();
+    rbt->printInorderRandomPointer();
+
+    RandomTree* rbt1 = new RandomTree(rbt->cloneTree());
+    std::cout << std::endl;
+    rbt1->RandomPointerReargmentInorder();
+    rbt1->printInorderRandomPointer();
+    
+    RandomTree* rbt2 = new RandomTree(rbt->cloneTreeGFG());
+    std::cout << std::endl;
+    rbt2->printLevelorder(); //Printing Clone
+    std::cout << std::endl;
+    rbt->printLevelorder(); //Printing Origianl
+
+    
+}
+
+

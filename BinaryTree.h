@@ -32,6 +32,7 @@ public:
     void deletion(int searchItem);
     void deletionGFG(int searchItem);
     void printInOrderStack();
+    void morrisTraversal();
 private:
     void printGivenLevel(tree::Node* ptr, int height);
     int height(tree::Node* ptr);

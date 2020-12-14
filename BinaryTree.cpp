@@ -199,6 +199,38 @@ void BinaryTree::printInOrderStack()
 	}
 }
 
+//Based on Threaded Binary Tree. Converts the normal tree to threaded tree for inorder printing and then
+//reverts back all the changes in binary tree.
+void BinaryTree::morrisTraversal()
+{
+	Node *pre, *current;
+	current = root;
+
+	while(current != nullptr){
+		if (current->left == nullptr) {
+			std::cout << current->getData() << " ";
+			current = current->right; // current.right will be point to the inorder successor of the current
+		}
+		else { //Making pre.right to point its inorder succssor
+			pre = current->left;
+			while (pre->right != nullptr && pre->right != current)
+				pre = pre->right;
+
+			//Creating threaded tree.
+			if (pre->right == nullptr) {
+				pre->right = current; 
+				current = current->left;
+			}
+			else {
+				//Reversing the changes of the above if.
+				pre->right = nullptr;
+				std::cout << current->getData() << " ";
+				current = current->right;
+			}
+		}
+	}
+}
+
 void BinaryTree::printGivenLevel(Node* ptr, int height)
 {
 	if (ptr == nullptr) {

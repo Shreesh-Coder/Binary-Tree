@@ -142,10 +142,14 @@
     <ClCompile Include="Binary Tree.cpp" />
     <ClCompile Include="BinaryTree.cpp" />
     <ClCompile Include="BinaryTreeArray.cpp" />
+    <ClCompile Include="RandomTree.cpp" />
+    <ClCompile Include="ThreadedBinaryTree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BinaryTree.h" />
     <ClInclude Include="BinaryTreeArray.h" />
+    <ClInclude Include="RandomTree.h" />
+    <ClInclude Include="ThreadedBinaryTree.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
