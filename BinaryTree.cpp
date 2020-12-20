@@ -3,6 +3,8 @@
 #include <stack>
 using namespace tree;
 
+int BinaryTree::curr = 0;
+
 void BinaryTree::printLevelOrderQueue()
 {
 	std::queue<Node*> queue = std::queue<Node*>();
@@ -231,6 +233,73 @@ void BinaryTree::morrisTraversal()
 	}
 }
 
+void BinaryTree::TreeCreator(std::string inorder, std::string preorder)
+{
+	curr = 0;
+	root = TreeCreation(inorder, preorder);
+}
+
+void BinaryTree::printPostOrder()
+{
+	printPostOrder(root);
+}
+
+Node* BinaryTree::TreeCreation(std::string inorder, std::string preorder)
+{
+	if (preorder.empty() || inorder.empty()) {
+		return nullptr;
+	}
+
+	std::string rootChar{};
+	rootChar += preorder[curr];
+
+	int pos = inorder.find(rootChar);
+	std::string newInorderLeft{ "" }, newInorderRight{ "" };
+	for (int i = 0; i < (pos - 1); i++) {
+		newInorderLeft += inorder[i];
+	}
+	
+	for (int j = pos+2; j < inorder.size(); j++) {
+		newInorderRight += inorder[j];
+	}
+	curr += 2;
+	Node* node = new Node(extractInteger(rootChar));
+	node->left = TreeCreation(newInorderLeft, preorder);
+	node->right = TreeCreation(newInorderRight, preorder);
+	return node;
+}
+
+int BinaryTree::maximumWidth()
+{
+	std::queue<Node*> queue;
+	queue.push(root);
+	int max = INT_MIN;
+
+	while (!queue.empty()) {
+		Node* ptr;
+		int levelSize = queue.size();
+		
+		if (max < levelSize) {
+			max = levelSize;
+		}
+
+		for (int i = 0; i < levelSize; i++) {
+			ptr = queue.front();
+			queue.pop();
+
+			if (ptr->left) {
+				queue.push(ptr->left);
+			}
+			if (ptr->right) {
+				queue.push(ptr->right);
+			}
+		}
+	
+
+	}
+	return max;
+}
+
 void BinaryTree::printGivenLevel(Node* ptr, int height)
 {
 	if (ptr == nullptr) {
@@ -242,6 +311,36 @@ void BinaryTree::printGivenLevel(Node* ptr, int height)
 	else if (height > 1) {
 		printGivenLevel(ptr->left, height - 1);
 		printGivenLevel(ptr->right, height - 1);
+	}
+}
+
+void BinaryTree::printNodesAt_K_Distance(int k)
+{
+	std::queue<Node*> queue;
+	queue.push(root);
+	int distance = 0;
+	while (!queue.empty()) {
+		Node* ptr;
+		int levelSize = queue.size();
+		for (int i = 0; i < levelSize; i++) {
+			ptr = queue.front();
+			queue.pop();
+			if (distance == k) {
+				std::cout << ptr->getData() << " ";
+			}
+			
+			if (ptr->left) {
+				queue.push(ptr->left);
+			}
+			if (ptr->right) {
+				queue.push(ptr->right);
+			}
+		}
+		if (distance == k) {
+			break;
+		}
+		distance++;
+		
 	}
 }
 
@@ -265,10 +364,75 @@ int BinaryTree::height(tree::Node* ptr)
 	}
 }
 
+void BinaryTree::printKDistanceRecursion(tree::Node* root, int k)
+{
+	if (root == nullptr)
+		return;
+	if (k == 0)
+		std::cout << root->getData() << " ";
+	printKDistanceRecursion(root->left, k - 1);
+	printKDistanceRecursion(root->right, k - 1);
+}
+
 Node* BinaryTree::findBottomAndRightMost()
 {
 	int height = BinaryTree::height(root);
 	return rightMost(root, height - 1);
+}
+
+void BinaryTree::printAncestors(tree::Node* root, int key)
+{
+	static bool isCalling = true;
+	if (!root) {
+		return;
+	}
+
+	if (key == root->getData()) {
+		isCalling = false;
+		return;
+	}
+	
+	printAncestors(root->left, key);
+	if(isCalling)
+	printAncestors(root->right, key);
+	if(!isCalling)
+	std::cout << root->getData() << " ";
+}
+
+bool BinaryTree::isSubTreeOptmize(tree::Node* subtree, tree::Node* tree)
+{
+	if (!subtree) {
+		return true;
+	}
+	if (!tree) {
+		return false;
+	}
+	std::vector<int> subtreeInorder, subtreePreorder, treeInorder, treePreorder;
+	storeInorder(&subtreeInorder, subtree);
+	storePreorder(&subtreePreorder, subtree);
+	storeInorder(&treeInorder, tree);
+	storePreorder(&treePreorder, tree);
+	
+	if (!isSubVector(treeInorder, subtreeInorder))
+		return false;
+
+	
+	return isSubVector(treePreorder, subtreePreorder);
+}
+
+//Checks the tree hight and data. if equals then return true else return false
+bool BinaryTree::areIdentical(tree::Node* rootT, tree::Node* rootS)
+{
+	if (rootT == nullptr && rootS == nullptr ) {
+		return true;
+	}
+	if (rootT == nullptr || rootS == nullptr) {
+		return false;
+	}
+
+	return rootT->getData() == rootS->getData()
+		&& areIdentical(rootT->left, rootS->left)
+		&& areIdentical(rootT->right, rootS->right);
 }
 
 tree::Node* BinaryTree::rightMost(tree::Node* ptr, int height)
@@ -302,6 +466,23 @@ tree::Node* BinaryTree::rightMost(tree::Node* ptr, int height)
 	if (temp != nullptr) {
 		return temp;
 	}
+}
+
+//Perorder travers the tree
+bool BinaryTree::isSubtree(tree::Node* subtreeRoot, tree::Node* treeRoot)
+{
+	if (subtreeRoot == nullptr) { //becacue null tree is also subtree
+		return true;
+	}
+	if (treeRoot == nullptr) {
+		return false;
+	}
+
+	if (areIdentical(treeRoot, subtreeRoot)) {
+		return true;
+	}
+	return isSubtree(subtreeRoot, treeRoot->left)
+		|| isSubtree(subtreeRoot, treeRoot->right);
 }
 
 void BinaryTree::rightMostDeleterGFG(tree::Node* delNode)
@@ -340,3 +521,60 @@ void BinaryTree::rightMostDeleterGFG(tree::Node* delNode)
 	}
 }
 
+int BinaryTree::extractInteger(std::string str)
+{
+	std::stringstream ss;
+	ss << str;
+	int value{0};
+	std::string temp;
+	while (!ss.eof()) {
+		ss >> temp;
+		std::stringstream(temp) >> value;
+		temp = "";
+	}
+	return value;
+}
+
+void BinaryTree::printPostOrder(Node* root)
+{
+	if (root == nullptr) {
+		return;
+	}
+	printPostOrder(root->left);
+	printPostOrder(root->right);
+	std::cout << root->getData() << " ";
+}
+
+
+void BinaryTree::storeInorder(std::vector<int>* vec, Node* root)
+{
+	if (!root)
+		return;
+	storeInorder(vec, root->left);
+	vec->push_back(root->getData());
+	storeInorder(vec, root->right);
+}
+
+
+void BinaryTree::storePreorder(std::vector<int>* vec, Node* root)
+{
+	if (!root) {
+		return;
+	}
+	vec->push_back(root->getData());
+	storePreorder(vec, root->left);
+	storePreorder(vec, root->right);
+}
+
+bool BinaryTree::isSubVector(const std::vector<int>& Tvec, const std::vector<int>& STvec)
+{
+	for (int i = 0, j = 0; i < Tvec.size(); i++) {
+		if (Tvec.at(i) == STvec.at(j)) {
+			if (j == STvec.size() - 1) {
+				return true;
+			}
+			j++;
+		}
+	}
+	return false;
+}

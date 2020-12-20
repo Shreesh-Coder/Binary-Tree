@@ -142,12 +142,15 @@
     <ClCompile Include="Binary Tree.cpp" />
     <ClCompile Include="BinaryTree.cpp" />
     <ClCompile Include="BinaryTreeArray.cpp" />
+    <ClCompile Include="BinaryTreeNextNode.cpp" />
     <ClCompile Include="RandomTree.cpp" />
+    <ClCompile Include="template.cpp" />
     <ClCompile Include="ThreadedBinaryTree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BinaryTree.h" />
     <ClInclude Include="BinaryTreeArray.h" />
+    <ClInclude Include="BinaryTreeNextNode.h" />
     <ClInclude Include="RandomTree.h" />
     <ClInclude Include="ThreadedBinaryTree.h" />
   </ItemGroup>
